@@ -27,6 +27,25 @@ export class SidemenuComponent  implements OnInit{
   givenName: string | undefined;
   familyName: string | undefined;
   ngOnInit(): void {
+    // Verificar si la página ya ha sido recargada
+     // Verifica que el código se esté ejecutando en el navegador
+     if (typeof window !== 'undefined') {
+      // Verificar si la página ya ha sido recargada
+      const hasReloaded = sessionStorage.getItem('hasReloadeds');
+      const buv = sessionStorage.getItem('bucle');
+      console.log("Este es el valor de buv",buv,hasReloaded);
+
+      if (hasReloaded !== null && hasReloaded === 'ture' && buv == null ) {
+        // Si no ha sido recargada, recargar la página y marcarla como recargada
+        sessionStorage.setItem('bucle', 'ture');
+        sessionStorage.setItem('hasReloadeds', 'true');
+        window.location.reload();
+        
+      } else {
+        // Limpiar la bandera después de la recarga
+        sessionStorage.removeItem('hasReloadeds');
+      }
+    }
     this.showData();
   }
 

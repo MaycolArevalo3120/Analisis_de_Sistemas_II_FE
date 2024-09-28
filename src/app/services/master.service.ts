@@ -27,7 +27,22 @@ export class MasterService {
       this.oAuthService.setStorage(localStorage);
       this.oAuthService.setupAutomaticSilentRefresh();
       this.oAuthService.loadDiscoveryDocumentAndTryLogin();
+      //console.log( this.oAuthService.getIdToken() );
+      this.decodeToken();
+      this.handleLogin();
     }
+  }
+
+  private decodeToken(){
+    const token = this.oAuthService.getIdToken();
+    if (token) {
+      const payload = token.split('.')[1];
+      const decodedPayload = atob(payload);
+      console.log(decodedPayload);
+      console.log("es valido",this.oAuthService.hasValidAccessToken());
+      return JSON.parse(decodedPayload);
+    }
+    return null
   }
   
 
@@ -47,5 +62,15 @@ export class MasterService {
   getToken(){
     return this.oAuthService.getAccessToken();
   };
+
+  handleLogin(){
+    if (this.oAuthService.hasValidAccessToken()) {
+      this.router.navigate(['/dashboard']);
+    } else {
+      this.router.navigate(['/login']);
+    }
+    sessionStorage.setItem("loggerdInUser", this.getToken())
+    sessionStorage.setItem('hasReloadeds', 'ture');;
+  }
 
 }
