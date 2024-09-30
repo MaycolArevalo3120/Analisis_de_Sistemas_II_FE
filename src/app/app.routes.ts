@@ -10,7 +10,7 @@ export const routes: Routes = [
         children: [
             {
                 path: 'proyectos',
-                title: 'Asignación de proyectos',
+                title: 'Asignación de proyectos s',
                 loadComponent: () => import('./dashboard/pages/proyectos/proyectos.component'),
             },
             {
