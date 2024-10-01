@@ -54,6 +54,7 @@ export class SidemenuComponent  implements OnInit{
   .flat()
   .filter(route => route && route.path)
   .filter(route => !route.path?.includes('login'))
+  .filter(route => !route.path?.includes('proyect-table'))
 
   showData() {
     const profile = this.authService.getProfile();

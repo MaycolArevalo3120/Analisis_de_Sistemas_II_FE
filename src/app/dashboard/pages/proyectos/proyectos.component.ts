@@ -1,12 +1,13 @@
 import { Component, inject, signal } from '@angular/core';
 import { TitleComponent } from '../../../shared/title/title.component';
 import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 type Grade = 'A'|'B'|'F';
 @Component({
   selector: 'app-proyectos',
   standalone: true,
-  imports: [TitleComponent],
+  imports: [TitleComponent,CommonModule],
   templateUrl: './proyectos.component.html',
   styleUrl: './proyectos.component.css'
 })
@@ -20,6 +21,6 @@ export default class ProyectosComponent {
   }
 
   redirectToPage() {
-    this.router.navigate(['/otra-pagina']);
+    this.router.navigate(['/dashboard/proyect-table']);
   }
 }
