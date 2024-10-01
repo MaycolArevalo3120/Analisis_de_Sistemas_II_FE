@@ -71,6 +71,9 @@ export class SidemenuComponent  implements OnInit{
   logOut() {
     this.authService.logout();
     this.router.navigate(['/login']);
+    sessionStorage.removeItem('bucle');
+    sessionStorage.removeItem('loggerdInUser');
+    localStorage.clear();
   }
 
 
