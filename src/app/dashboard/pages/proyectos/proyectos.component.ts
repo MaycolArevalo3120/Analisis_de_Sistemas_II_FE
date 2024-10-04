@@ -12,7 +12,7 @@ type Grade = 'A'|'B'|'F';
   styleUrl: './proyectos.component.css'
 })
 export default class ProyectosComponent {
-  private router = inject(Router);
+  private readonly router = inject(Router);
   public showContent = signal(false);
   public grade = signal<Grade>('A');
   public toggleContent () {

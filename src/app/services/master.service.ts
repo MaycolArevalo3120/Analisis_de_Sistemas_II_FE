@@ -1,16 +1,21 @@
 import { inject, Injectable } from '@angular/core';
 import { AuthConfig, OAuthService } from 'angular-oauth2-oidc';
 import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { CookieService } from 'ngx-cookie-service';
+import { BehaviorSubject, map } from 'rxjs';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class MasterService {
+  private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
+  isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
   private oAuthService = inject(OAuthService);
   private router = inject(Router);
 
-  constructor() {
+  constructor(private http: HttpClient, private cookieService: CookieService) {
     this.initConfigurations();
   }
 
@@ -39,7 +44,7 @@ export class MasterService {
       const payload = token.split('.')[1];
       const decodedPayload = atob(payload);
       console.log(decodedPayload);
-      console.log("es valido",this.oAuthService.hasValidAccessToken());
+      console.log("es valido",this.oAuthService.getIdToken());
       return JSON.parse(decodedPayload);
     }
     return null
@@ -71,6 +76,32 @@ export class MasterService {
     }
     sessionStorage.setItem("loggerdInUser", this.getToken())
     sessionStorage.setItem('hasReloadeds', 'ture');;
+  }
+  getTokensGoogle(){  
+    return this.oAuthService.getIdToken();
+  }
+
+  loginBackEnd(credentials: any) {
+    return this.http.post<any>('http://localhost:8081/analisis-sistemas/api/publico/authenticate', credentials)
+      .pipe(
+        map(response => {
+          this.cookieService.set('jwt', response.jwt, { expires: new Date(response.expires * 1000) });
+          this.isAuthenticatedSubject.next(true);
+          return response;
+        })
+      );
+  }
+  logoutBackend() {
+    this.cookieService.delete('jwt');
+    this.isAuthenticatedSubject.next(false);
+  }
+
+  // Método para verificar si el token es válido (opcional)
+  // Puedes implementar una lógica para verificar la validez del token, por ejemplo,
+  // enviando una petición al servidor
+  isAuthenticated() {
+    // ... Lógica para verificar la validez del token
+    return this.isAuthenticatedSubject.value;
   }
 
 }
